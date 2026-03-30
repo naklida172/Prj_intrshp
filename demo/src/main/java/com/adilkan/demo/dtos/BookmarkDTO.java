@@ -1,4 +1,4 @@
-package kg.alatoo.midterm.dtos;
+package com.adilkan.demo.dtos;
 
 import java.util.Date;
 
@@ -11,12 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class OrderDTO {
+public class BookmarkDTO {
     private Long id;
-    private Date orderDate;
-    private short quantity;
-    private String status;
+    private Date saveDate;
     private Long productId; // FK to Product
-    private Long pointId;   // FK to Point
     private Long userId;    // FK to User
 }

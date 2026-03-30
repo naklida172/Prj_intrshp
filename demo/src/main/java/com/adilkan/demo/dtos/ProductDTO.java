@@ -1,6 +1,4 @@
-package kg.alatoo.midterm.dtos;
-
-import java.util.List;
+package com.adilkan.demo.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +13,6 @@ public class ProductDTO {
     private Long id;
     private String name;
     private String description;
-    private short rating;
-    private Long sellerId;   // FK to Seller
-    private List<Long> tagIds; // List of FK to Tags
+    private Short rating;
 }
 

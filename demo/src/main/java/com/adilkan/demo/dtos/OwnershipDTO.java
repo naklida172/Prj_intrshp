@@ -1,5 +1,4 @@
-package kg.alatoo.midterm.dtos;
-
+package com.adilkan.demo.dtos;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -11,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class SellerDTO {
+public class OwnershipDTO {
     private Long id;
-    private String name;
     private List<Long> userIds; // List of FK to Users
-    private List<Long> productIds;
+    private List<Long> productIds; // List of FK to Products
 }
