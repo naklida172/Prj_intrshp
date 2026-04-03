@@ -9,14 +9,17 @@ import com.adilkan.demo.entities.Product;
 import com.adilkan.demo.entities.User;
 
 public class OwnershipMapper {
-    public static OwnershipDTO toDTO(Ownership Ownership) {
-        if (Ownership == null) return null;
+    public static OwnershipDTO toDTO(Ownership ownership) {
+        if (ownership == null) return null;
         return OwnershipDTO.builder()
-                .id(Ownership.getId())
-                .userIds(Ownership.getUser() != null
-                        ? Ownership.getUser().stream().map(User::getId).toList()
+                .id(ownership.getId())
+                .userIds(ownership.getUser() != null
+                        ? ownership.getUser().stream().map(User::getId).toList()
                         : null)
-                .productIds(Ownership.getProduct() != null ? Ownership.getProduct().stream().map(Product::getId).toList()
+                .collaboratorIds(ownership.getCollaborator() != null
+                        ? ownership.getCollaborator().stream().map(User::getId).toList()
+                        : null)
+                .productIds(ownership.getProduct() != null ? ownership.getProduct().stream().map(Product::getId).toList()
                 : null)
                 .build();
     }
@@ -38,8 +41,16 @@ public class OwnershipMapper {
         }
     }
 
+    List<User> collaborators = new ArrayList<>();
+    if (OwnershipDTO.getCollaboratorIds() != null) {
+        for (Long collaboratorId : OwnershipDTO.getCollaboratorIds()) {
+            collaborators.add(User.builder().id(collaboratorId).build());
+        }
+    }
+
     return Ownership.builder()
             .user(users)
+            .collaborator(collaborators)
             .product(products)
             .build();
     }

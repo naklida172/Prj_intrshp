@@ -20,6 +20,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "users") 
 public class User {
+
+    //TODO: Remove nullable when the project is ready for production. It is only for testing purposes.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

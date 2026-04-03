@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class OwnershipDTO {
+public class PostDTO {
     private Long id;
-    private List<Long> userIds; // List of FK to Users
     private List<Long> productIds; // List of FK to Products
-    private List<Long> collaboratorIds; // List of FK to Collaborators
+    private String description;
+    private List<String> imageURL; // List of FK to Ownership
 }

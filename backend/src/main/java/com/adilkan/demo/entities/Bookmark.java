@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Bookmark {
 
+    //TODO: Remove nullable when the project is ready for production. It is only for testing purposes.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
