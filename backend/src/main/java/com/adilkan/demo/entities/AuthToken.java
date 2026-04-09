@@ -25,15 +25,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "auth_token")
 public class AuthToken {
 
+    //TODO: Remove nullable when the project is ready for production. It is only for testing purposes.
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     private UUID token;
 
     @Column(name = "created_at")

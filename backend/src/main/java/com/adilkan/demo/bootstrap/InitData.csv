@@ -1,0 +1,78 @@
+entity,type,value
+User,id,1
+User,name,John Doe
+User,username,johndoe
+User,password,password12
+User,role,Customer
+User,email,johndoe@example.com
+
+User,id,2
+User,name,Jane Smith
+User,username,janesmith
+User,password,password12
+User,role,Vendor
+User,email,janesmith@example.com
+
+User,id,3
+User,name,Robert Brown
+User,username,robertbrown
+User,password,password12
+User,role,Admin
+User,email,robertbrown@example.com
+
+Product,id,1
+Product,name,SuperWidget
+Product,description,Top-notch widget for your needs
+Product,rating,5
+
+Product,id,2
+Product,name,MegaWidget
+Product,description,Enhanced widget with extra features
+Product,rating,4
+
+Product,id,3
+Product,name,UltraWidget
+Product,description,Ultra-performance widget for professionals
+Product,rating,4
+
+AuthToken,id,1
+AuthToken,user,1
+AuthToken,token,550e8400-e29b-41d4-a716-446655440000
+AuthToken,createdAt,2026-04-07T10:00:00
+
+AuthToken,id,2
+AuthToken,user,2
+AuthToken,token,550e8400-e29b-41d4-a716-446655440001
+AuthToken,createdAt,2026-04-07T11:00:00
+
+Bookmark,id,1
+Bookmark,saveDate,2026-04-07T12:00:00
+Bookmark,product,1
+Bookmark,user,1
+
+Bookmark,id,2
+Bookmark,saveDate,2026-04-07T13:00:00
+Bookmark,product,2
+Bookmark,user,2
+
+Ownership,id,1
+Ownership,user,1;2
+Ownership,collaborator,3
+Ownership,product,1;2
+
+Ownership,id,2
+Ownership,user,2;3
+Ownership,collaborator,1
+Ownership,product,2;3
+
+Post,id,1
+Post,ownership,1
+Post,product,1;2
+Post,description,Exciting new post about widgets
+Post,imageURL,https://example.com/image1.jpg;https://example.com/image2.jpg
+
+Post,id,2
+Post,ownership,2
+Post,product,2;3
+Post,description,Latest updates on our products
+Post,imageURL,https://example.com/image3.jpg
