@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme.dart';
+import '../../../services/api/api_client.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +14,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _isCheckingConnection = false;
   bool _obscurePassword = true;
+  String _connectionStatus = '';
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -29,6 +32,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       curve: Curves.easeOut,
     );
     _animationController.forward();
+    
+    // Автоматическая проверка связи при загрузке экрана
+    _checkConnection();
   }
 
   @override
@@ -37,6 +43,29 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  // Проверка связи с бэкендом
+  Future<void> _checkConnection() async {
+    setState(() {
+      _isCheckingConnection = true;
+      _connectionStatus = '🔄 Проверка связи с сервером...';
+    });
+
+    try {
+      final apiClient = ApiClient();
+      final response = await apiClient.dio.get('/health');
+      
+      setState(() {
+        _connectionStatus = '✅ Сервер доступен!';
+        _isCheckingConnection = false;
+      });
+    } catch (e) {
+      setState(() {
+        _connectionStatus = '❌ Сервер недоступен. Запустите бэкенд: cd backend && mvn spring-boot:run';
+        _isCheckingConnection = false;
+      });
+    }
   }
 
   Future<void> _login() async {
@@ -49,18 +78,35 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
     setState(() => _isLoading = true);
 
-    // Имитация API запроса
-    await Future.delayed(const Duration(seconds: 1));
-    
-    if (mounted) {
-      setState(() => _isLoading = false);
-      
-      // Временная проверка (замените на реальный API)
-      if (_emailController.text == 'test@test.com' && _passwordController.text == '123456') {
-        context.go('/home');
-      } else {
+    try {
+      final apiClient = ApiClient();
+      final response = await apiClient.dio.post('/auth/login', data: {
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text,
+      });
+
+      if (mounted) {
+        setState(() => _isLoading = false);
+        
+        if (response.statusCode == 200 && response.data['accessToken'] != null) {
+          // Сохраняем токен (если есть secure storage)
+          // await SecureStorage.saveToken(response.data['accessToken']);
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Вход выполнен успешно!')),
+          );
+          context.go('/home');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Неверный email или пароль')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Неверный email или пароль')),
+          SnackBar(content: Text('Ошибка: $e')),
         );
       }
     }
@@ -77,7 +123,71 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 60),
+                const SizedBox(height: 40),
+                
+                // Статус подключения
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: _connectionStatus.contains('✅') 
+                        ? Colors.green.withOpacity(0.1) 
+                        : _connectionStatus.contains('❌')
+                            ? Colors.red.withOpacity(0.1)
+                            : Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _connectionStatus.contains('✅') 
+                          ? Colors.green 
+                          : _connectionStatus.contains('❌')
+                              ? Colors.red
+                              : Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      if (_isCheckingConnection)
+                        const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      else
+                        Icon(
+                          _connectionStatus.contains('✅') ? Icons.check_circle : Icons.wifi_off,
+                          color: _connectionStatus.contains('✅') ? Colors.green : Colors.red,
+                          size: 20,
+                        ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _connectionStatus.isEmpty ? 'Проверка подключения...' : _connectionStatus,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _connectionStatus.contains('✅') 
+                                ? Colors.green 
+                                : _connectionStatus.contains('❌')
+                                    ? Colors.red
+                                    : Colors.grey,
+                          ),
+                        ),
+                      ),
+                      if (_connectionStatus.contains('❌'))
+                        TextButton(
+                          onPressed: _checkConnection,
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(60, 30),
+                            padding: EdgeInsets.zero,
+                          ),
+                          child: const Text('Повторить', style: TextStyle(fontSize: 12)),
+                        ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(height: 20),
+                
                 // Logo
                 Center(
                   child: Column(
@@ -118,6 +228,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   ),
                 ),
                 const SizedBox(height: 48),
+                
                 // Form
                 TextField(
                   controller: _emailController,
@@ -147,12 +258,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   ),
                 ),
                 const SizedBox(height: 32),
+                
                 // Login Button
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _login,
+                    onPressed: (_isLoading || _isCheckingConnection || _connectionStatus.contains('❌')) ? null : _login,
                     child: _isLoading
                         ? const SizedBox(
                             height: 24,
@@ -169,6 +281,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   ),
                 ),
                 const SizedBox(height: 16),
+                
                 Center(
                   child: TextButton(
                     onPressed: () {
