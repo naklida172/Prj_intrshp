@@ -16,6 +16,7 @@ public class AuthTokenDTO {
     private long id;
     private UUID token;
     private Date createdAt;
+    private Date expiresAt;
     private Long userId; // FK to User
 }
 

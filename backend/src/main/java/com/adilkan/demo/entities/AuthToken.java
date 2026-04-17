@@ -40,4 +40,7 @@ public class AuthToken {
 
     @Column(name = "created_at")
     private Date createdAt;
+
+    @Column(name = "expires_at")
+    private Date expiresAt;
 }

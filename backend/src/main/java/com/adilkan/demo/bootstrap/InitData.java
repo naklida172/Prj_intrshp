@@ -190,6 +190,15 @@ public class InitData {
                     log.error("Invalid date format for AuthToken createdAt: " + value, e);
                 }
                 break;
+            case "expiresAt":
+                try {
+                    LocalDateTime ldt = LocalDateTime.parse(value);
+                    Date date = java.sql.Timestamp.valueOf(ldt);
+                    authTokens.get(currentId).setExpiresAt(date);
+                } catch (Exception e) {
+                    log.error("Invalid date format for AuthToken expiresAt: " + value, e);
+                }
+                break;
         }
         if (authTokens.get(currentId) != null) {
             authTokens.put(currentId, authTokenRepository.save(authTokens.get(currentId)));

@@ -54,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
                 .user(user)
                 .token(UUID.randomUUID())
                 .createdAt(new Date())
+                .expiresAt(new Date(System.currentTimeMillis() + 60000)) // Set expiration to 1 minute from now
                 .build();
 
         return authTokenRepository.save(authToken);
@@ -93,6 +94,7 @@ public class AuthServiceImpl implements AuthService {
                 .user(user)
                 .token(UUID.randomUUID())
                 .createdAt(new Date())
+                .expiresAt(new Date(System.currentTimeMillis() + 60000)) // Set expiration to 1 minute from now
                 .build();
 
         return authTokenRepository.save(authToken);

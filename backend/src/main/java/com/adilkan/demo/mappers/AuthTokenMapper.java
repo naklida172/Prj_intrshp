@@ -11,6 +11,7 @@ public class AuthTokenMapper {
                 .id(authToken.getId())
                 .token(authToken.getToken())
                 .createdAt(authToken.getCreatedAt())
+                .expiresAt(authToken.getExpiresAt())
                 .userId(authToken.getUser() != null ? authToken.getUser().getId() : null)
                 .build();
     }
@@ -24,6 +25,7 @@ public class AuthTokenMapper {
                 .id(authTokenDTO.getId())
                 .token(authTokenDTO.getToken())
                 .createdAt(authTokenDTO.getCreatedAt())
+                .expiresAt(authTokenDTO.getExpiresAt())
                 .user(user)
                 .build();
     }
